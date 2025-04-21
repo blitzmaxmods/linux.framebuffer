@@ -1,6 +1,3 @@
-// linux.h
-// https://github.com/torvalds/linux/blob/master/include/linux/fb.h
-
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,6 +6,9 @@
 #include <linux/fb.h>
 #include <sys/mman.h>
 #include <sys/ioctl.h>
+
+// linux.h
+// https://github.com/torvalds/linux/blob/master/include/linux/fb.h
 
 int fbfd = 0;		// Frame Buffer File Descriptor
 struct fb_fix_screeninfo finfo;
@@ -84,6 +84,26 @@ int fb_cls( int color ) {
 int fb_flip() {
 	memcpy( fbuf, bbuf, screensize );
 }
+/*
+int fb_getscreeninfo() {
+	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, &var_info ) ) {
+		printf("Error reading variable screen info.\n");
+		return(-1);
+	}
+	return(0);
+}
+
+int fb_getscreeninfo( int fbfd, fb_var_screeninfo var_info ) {
+	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, &var_info ) ) {
+		printf("Error reading variable screen info.\n");
+		return(-1);
+	}
+	return(0);
+}
+*/
+//int fb_getscreeninfo( struct fb_var_screeninfo &request ) {
+//	request = var_info;
+//}
 
 int fb_getbpp() {
 	return( vinfo.bits_per_pixel );
@@ -103,6 +123,15 @@ int fb_plot( int x, int y, int color ) {
 int fb_setbpp( int bpp ) {
 	vinfo.bits_per_pixel = bpp;
 }
+
+//int fb_load_finfo() {
+//	// Read variable screen infromation
+//	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, &vinfo ) ) {
+//		printf("Error reading variable screen info.\n");
+//		return(-1);
+//	}
+//	
+//}
 
 int fb_save_vinfo( struct fb_var_screeninfo info ) {
 	if (ioctl(fbfd, FBIOPUT_VSCREENINFO, &vinfo)) {
@@ -131,33 +160,3 @@ int fb_fill_rect( int x, int y, int w, int h, int color ) {
 		}
 	}
 }
-
-//int fb_load_finfo() {
-//	// Read variable screen infromation
-//	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, &vinfo ) ) {
-//		printf("Error reading variable screen info.\n");
-//		return(-1);
-//	}
-//	
-//}
-
-/*
-int fb_getscreeninfo() {
-	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, &var_info ) ) {
-		printf("Error reading variable screen info.\n");
-		return(-1);
-	}
-	return(0);
-}
-
-int fb_getscreeninfo( int fbfd, fb_var_screeninfo var_info ) {
-	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, &var_info ) ) {
-		printf("Error reading variable screen info.\n");
-		return(-1);
-	}
-	return(0);
-}
-*/
-//int fb_getscreeninfo( struct fb_var_screeninfo &request ) {
-//	request = var_info;
-//}

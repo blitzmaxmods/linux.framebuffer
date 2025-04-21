@@ -7,6 +7,7 @@
 .bmx/
 .vscode/
 private/
+include/
 
 # Exclude files
 *.bak
