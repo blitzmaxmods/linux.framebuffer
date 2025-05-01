@@ -1,14 +1,15 @@
 SuperStrict
 
-' VER   DATE         AUTHOR       DETAIL
-' 0.01  12 APR 2025  Scaremonger  Open Framebuffer and get resolution
-' 0.02  12 APR 2025  Scaremonger  Added backbuffer, cls, flip, plot and fillrect()
+'
+'	Framebuffer functions For BlitzMax
+'	(c) Copyright Si Dunford [Scaremonger], April 2025
+'
 
 Framework brl.standardio
 
 ' https://e2e.ti.com/support/processors-group/processors/f/processors-forum/8343/please-tell-me-what-they-mean-for-fbioget_vscreeninfo-and-fbioget_fscreeninfo
 
-Import "framebuffer.c"
+Import "framebuffer1.c"
 
 Extern
 	Function fb_open:Int()

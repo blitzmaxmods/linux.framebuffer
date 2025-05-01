@@ -1,3 +1,11 @@
+/*
+**	Framebuffer functions for BlitzMax
+**	(c) Copyright Si Dunford [Scaremonger], April 2025
+*/
+
+// linux.h
+// https://github.com/torvalds/linux/blob/master/include/linux/fb.h
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,9 +15,6 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 
-// linux.h
-// https://github.com/torvalds/linux/blob/master/include/linux/fb.h
-
 int fbfd = 0;		// Frame Buffer File Descriptor
 struct fb_fix_screeninfo finfo;
 struct fb_var_screeninfo vinfo_original;
@@ -17,6 +22,21 @@ struct fb_var_screeninfo vinfo;
 long int screensize = 0;
 char *fbuf = 0;		// Frame Buffer
 char *bbuf;			// Back Buffer
+
+int fb_sizeof_finfo(){
+	return sizeof( struct fb_fix_screeninfo );
+}
+
+int fb_sizeof_vinfo(){
+	return sizeof( struct fb_var_screeninfo );
+}
+
+// Open default framebuffer.
+// Returns -1 if unsuccessful or the file descriptor if success
+int fb_open_default() {
+	int fbfd = open( "/dev/fb0", O_RDWR );
+	return fbfd;
+}
 
 int fb_open() {
 	fbfd = open( "/dev/fb0", O_RDWR );
@@ -66,6 +86,55 @@ int fb_open() {
 	return( fbfd );
 }
 
+// Get Fixed Screen Information
+int fb_get_finfo( int fbfd, struct fb_fix_screeninfo *finfo,  ) {
+
+	printf("- C getting fixed screen info.\n");
+
+	// Read fixed screen infromation
+	if ( ioctl( fbfd, FBIOGET_FSCREENINFO, finfo ) ) {
+		printf("- C: FAILED\n");
+		return(0);
+	}
+	printf( "- C: SUCCESS\n");	
+	printf( "  sizeof= %d\n",        sizeof( struct fb_fix_screeninfo ) );
+	
+	printf( "  ID: %s\n",           finfo->id );
+	printf( "  SMEM_START: %d\n",   finfo->smem_start );
+	printf( "  SMEM_LENGTH: %d\n",  finfo->smem_len );
+	printf( "  TYPE: %d\n",         finfo->type );
+	printf( "  TYPE_AUX: %d\n",     finfo->type_aux );
+	printf( "  VISUAL: %d\n",       finfo->visual );
+	printf( "  XPANSTEP: %d\n",     finfo->xpanstep );
+	printf( "  YPANSTEP: %d\n",     finfo->ypanstep );
+	printf( "  YWRAPSTEP: %d\n",    finfo->ywrapstep );
+	printf( "  LINE-LENGTH: %d\n",  finfo->line_length );
+	printf( "  MMIOSTART: %d\n",    finfo->mmio_start );
+	printf( "  MMIO_LEN: %d\n",     finfo->mmio_len );
+	printf( "  ACCEL: %d\n",        finfo->accel );
+	printf( "  CAPABILITIES: %d\n", finfo->capabilities );
+	return(1);
+}
+
+// Get variable Screen Information
+int fb_get_vinfo( int fbfd, struct fb_var_screeninfo *vinfo ) {
+
+	printf("- C getting variable screen info.\n");
+
+	// Read fixed screen infromation
+	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, vinfo ) ) {
+		printf("- C: FAILED\n");
+		return(0);
+	}
+	
+	printf( "- C: SUCCESS\n");	
+	printf( "  sizeof= %d\n",      sizeof( struct fb_var_screeninfo ) );
+	printf( "  XRES: %d\n", vinfo->xres );
+	printf( "  YRES: %d\n", vinfo->yres );
+	printf( "  BPP:  %d\n", vinfo->bits_per_pixel );
+	return(1);
+}
+
 int fb_close() {
 	// Restore screen
 	fb_save_vinfo( &vinfo_original );
@@ -84,26 +153,6 @@ int fb_cls( int color ) {
 int fb_flip() {
 	memcpy( fbuf, bbuf, screensize );
 }
-/*
-int fb_getscreeninfo() {
-	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, &var_info ) ) {
-		printf("Error reading variable screen info.\n");
-		return(-1);
-	}
-	return(0);
-}
-
-int fb_getscreeninfo( int fbfd, fb_var_screeninfo var_info ) {
-	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, &var_info ) ) {
-		printf("Error reading variable screen info.\n");
-		return(-1);
-	}
-	return(0);
-}
-*/
-//int fb_getscreeninfo( struct fb_var_screeninfo &request ) {
-//	request = var_info;
-//}
 
 int fb_getbpp() {
 	return( vinfo.bits_per_pixel );
@@ -123,15 +172,6 @@ int fb_plot( int x, int y, int color ) {
 int fb_setbpp( int bpp ) {
 	vinfo.bits_per_pixel = bpp;
 }
-
-//int fb_load_finfo() {
-//	// Read variable screen infromation
-//	if ( ioctl( fbfd, FBIOGET_VSCREENINFO, &vinfo ) ) {
-//		printf("Error reading variable screen info.\n");
-//		return(-1);
-//	}
-//	
-//}
 
 int fb_save_vinfo( struct fb_var_screeninfo info ) {
 	if (ioctl(fbfd, FBIOPUT_VSCREENINFO, &vinfo)) {
@@ -160,3 +200,5 @@ int fb_fill_rect( int x, int y, int w, int h, int color ) {
 		}
 	}
 }
+
+
