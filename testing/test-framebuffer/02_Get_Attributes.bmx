@@ -7,7 +7,7 @@ SuperStrict
 
 Framework brl.standardio
 
-Import "framebuffer2.c"
+Import "02_framebuffer.c"
 
 Extern
 	Function fb_open:Byte Ptr( device$z )

@@ -9,7 +9,7 @@ Framework brl.standardio
 
 ' https://e2e.ti.com/support/processors-group/processors/f/processors-forum/8343/please-tell-me-what-they-mean-for-fbioget_vscreeninfo-and-fbioget_fscreeninfo
 
-Import "framebuffer1.c"
+Import "01_framebuffer.c"
 
 Extern
 	Function fb_open:Int()
@@ -76,4 +76,4 @@ Until MilliSecs() > timeout
 Print "CLOSE FRAMEBUFFER"
 fb_close()
 
-DebugStop
+

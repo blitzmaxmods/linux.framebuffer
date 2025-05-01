@@ -87,7 +87,7 @@ int fb_open() {
 }
 
 // Get Fixed Screen Information
-int fb_get_finfo( int fbfd, struct fb_fix_screeninfo *finfo,  ) {
+int fb_get_finfo( int fbfd, struct fb_fix_screeninfo *finfo ) {
 
 	printf("- C getting fixed screen info.\n");
 
