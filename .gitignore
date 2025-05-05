@@ -7,7 +7,6 @@
 .bmx/
 .vscode/
 private/
-include/
 
 # Exclude files
 *.bak
@@ -17,5 +16,14 @@ include/
 *.a
 *.i
 *.i2
+
+# Exclude project folders
+include/
+
+# Exclude project files
+sftp*.txt
+build
+test
+rsync*.txt
 
 
